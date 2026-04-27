@@ -37,11 +37,92 @@ const PROJECTS = [
   { src: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=80", label: "Bathroom Re-Caulking" },
 ];
 
-const REVIEWS = [
-  { name: "Jennifer M.", role: "Homeowner", text: "Booked Vlad for a TV mount and three shelves. He was on time, clean, and finished in one visit. New go-to handyman." },
-  { name: "Robert K.", role: "Homeowner", text: "Replaced both bathroom faucets and re-caulked the tubs in an afternoon. No mess, no surprises on the bill." },
-  { name: "Lauren P.", role: "Homeowner", text: "Smart lock and video doorbell installed and configured to my phone. Walked me through everything before leaving." },
+type Review = {
+  name: string;
+  rating: number;   // 1–5; defaults to 5 if missing/invalid
+  service: string;  // e.g. "TV Mounting" — shown as small label above the quote
+  date: string;     // free-form, e.g. "March 12, 2025"
+  text: string;
+};
+
+const REVIEWS: Review[] = [
+  { name: "Jennifer M.", rating: 5, service: "TV Mounting + Shelf Installation", date: "March 12, 2025", text: "Booked Vlad for a TV mount and three shelves. He was on time, clean, and finished in one visit. New go-to handyman." },
+  { name: "Robert K.", rating: 5, service: "Faucet Installation & Caulking", date: "February 28, 2025", text: "Replaced both bathroom faucets and re-caulked the tubs in an afternoon. No mess, no surprises on the bill." },
+  { name: "Lauren P.", rating: 5, service: "Smart Lock + Video Doorbell", date: "January 15, 2025", text: "Smart lock and video doorbell installed and configured to my phone. Walked me through everything before leaving." },
 ];
+
+// Google Sheet ID that powers the live Reviews section.
+// Set NEXT_PUBLIC_REVIEWS_SHEET_ID in .env.local (or the deployment platform).
+// See .env.example and the README for setup. Leave unset to keep the static
+// REVIEWS list above as the only source.
+const REVIEWS_SHEET_ID = process.env.NEXT_PUBLIC_REVIEWS_SHEET_ID ?? "";
+
+function parseCSV(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else if (c === '"') {
+      inQuotes = true;
+    } else if (c === ",") {
+      row.push(field); field = "";
+    } else if (c === "\n" || c === "\r") {
+      if (c === "\r" && text[i + 1] === "\n") i++;
+      row.push(field); field = "";
+      rows.push(row); row = [];
+    } else {
+      field += c;
+    }
+  }
+  if (field !== "" || row.length) { row.push(field); rows.push(row); }
+  return rows.filter((r) => r.some((c) => c.trim() !== ""));
+}
+
+async function fetchSheetReviews(sheetId: string): Promise<Review[]> {
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const rows = parseCSV(await res.text());
+  if (rows.length < 2) return [];
+  const headers = rows[0].map((h) => h.trim().toLowerCase());
+  const idx = (key: string) => headers.indexOf(key);
+  const ni = idx("name");
+  const rti = idx("rating");
+  const si = idx("service");
+  const di = idx("date");
+  const ti = idx("text");
+  return rows
+    .slice(1)
+    .map((r) => {
+      const ratingRaw = rti >= 0 ? Number((r[rti] ?? "").trim()) : 5;
+      const rating = Number.isFinite(ratingRaw) && ratingRaw > 0 ? ratingRaw : 5;
+      return {
+        name: ni >= 0 ? (r[ni] ?? "").trim() : "",
+        rating,
+        service: si >= 0 ? (r[si] ?? "").trim() : "",
+        date: di >= 0 ? (r[di] ?? "").trim() : "",
+        text: ti >= 0 ? (r[ti] ?? "").trim() : "",
+      };
+    })
+    .filter((r) => r.text);
+}
+
+function Stars({ n }: { n: number }) {
+  const full = Math.max(0, Math.min(5, Math.round(n)));
+  return (
+    <span aria-label={`${full} out of 5 stars`} className="inline-flex select-none tracking-wide">
+      <span className="text-amber-500">{"★".repeat(full)}</span>
+      <span className="text-slate-300">{"★".repeat(5 - full)}</span>
+    </span>
+  );
+}
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
@@ -140,6 +221,181 @@ function ServiceSelect({ value, onChange }: { value: string; onChange: (v: strin
         })}
       </div>
     </div>
+  );
+}
+
+function HorizontalSlider({
+  children,
+  label,
+  fadeColor = "white",
+}: {
+  children: React.ReactNode;
+  label: string;
+  fadeColor?: "white" | "slate";
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => {
+      setCanPrev(el.scrollLeft > 8);
+      setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 8);
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    // Re-evaluate when slides are added/removed (e.g. reviews loaded async).
+    const mo = new MutationObserver(update);
+    mo.observe(el, { childList: true });
+    return () => {
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      mo.disconnect();
+    };
+  }, []);
+
+  const scroll = (dir: 1 | -1) => {
+    const el = ref.current;
+    if (!el) return;
+    const card = el.querySelector("[data-slide]") as HTMLElement | null;
+    const step = card ? card.offsetWidth + 24 : el.clientWidth * 0.8;
+    el.scrollBy({ left: step * dir, behavior: "smooth" });
+  };
+
+  const fadeFromLeft =
+    fadeColor === "slate" ? "from-slate-50" : "from-white";
+  const fadeFromRight =
+    fadeColor === "slate" ? "from-slate-50" : "from-white";
+
+  return (
+    <div className="relative">
+      <div
+        ref={ref}
+        role="region"
+        aria-label={label}
+        className="scrollbar-hide -mx-6 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-pl-6 px-6 py-4"
+      >
+        {children}
+      </div>
+
+      {/* Edge fades — hint that more content exists in that direction */}
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-y-0 -left-6 w-16 bg-gradient-to-r ${fadeFromLeft} to-transparent transition-opacity duration-200 ${
+          canPrev ? "opacity-100" : "opacity-0"
+        }`}
+      />
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-y-0 -right-6 w-16 bg-gradient-to-l ${fadeFromRight} to-transparent transition-opacity duration-200 ${
+          canNext ? "opacity-100" : "opacity-0"
+        }`}
+      />
+
+      {/* Floating arrow buttons — sit on top of cards, vertically centered */}
+      <button
+        type="button"
+        onClick={() => scroll(-1)}
+        aria-label="Previous"
+        className={`absolute left-1 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white text-slate-700 shadow-lg ring-1 ring-slate-900/10 transition hover:text-blue-700 hover:shadow-xl md:h-12 md:w-12 ${
+          canPrev ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      >
+        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 010 1.06L9.06 10l3.73 3.71a.75.75 0 01-1.06 1.06l-4.25-4.24a.75.75 0 010-1.06l4.25-4.24a.75.75 0 011.06 0z" clipRule="evenodd" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        onClick={() => scroll(1)}
+        aria-label="Next"
+        className={`absolute right-1 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white text-slate-700 shadow-lg ring-1 ring-slate-900/10 transition hover:text-blue-700 hover:shadow-xl md:h-12 md:w-12 ${
+          canNext ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      >
+        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 010-1.06L10.94 10 7.21 6.29a.75.75 0 011.06-1.06l4.25 4.24a.75.75 0 010 1.06l-4.25 4.24a.75.75 0 01-1.06 0z" clipRule="evenodd" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
+function ReviewsSection() {
+  const [reviews, setReviews] = useState<Review[]>(REVIEWS);
+  const [loading, setLoading] = useState<boolean>(Boolean(REVIEWS_SHEET_ID));
+
+  useEffect(() => {
+    if (!REVIEWS_SHEET_ID) return;
+    let cancelled = false;
+    fetchSheetReviews(REVIEWS_SHEET_ID)
+      .then((r) => { if (!cancelled && r.length) setReviews(r); })
+      .catch(() => { /* keep static fallback */ })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  return (
+    <section id="reviews" className="py-24">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto mb-14 max-w-2xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">Client stories</p>
+          <h2 className="mt-2 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
+            Trusted by homeowners across the area.
+          </h2>
+        </div>
+        <HorizontalSlider label="Customer reviews">
+          {loading
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  data-slide
+                  className="flex w-[300px] shrink-0 animate-pulse snap-start flex-col rounded-2xl border border-slate-200 bg-white p-7 sm:w-[360px]"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="h-4 w-24 rounded bg-slate-200" />
+                    <div className="h-3 w-20 rounded bg-slate-200" />
+                  </div>
+                  <div className="mt-3 h-3 w-32 rounded bg-slate-200" />
+                  <div className="mt-4 space-y-2">
+                    <div className="h-3 w-full rounded bg-slate-200" />
+                    <div className="h-3 w-5/6 rounded bg-slate-200" />
+                    <div className="h-3 w-2/3 rounded bg-slate-200" />
+                  </div>
+                  <div className="mt-6 border-t border-slate-100 pt-4">
+                    <div className="h-4 w-32 rounded bg-slate-200" />
+                  </div>
+                </div>
+              ))
+            : reviews.map((r, i) => (
+                <div
+                  key={`${r.name}-${i}`}
+                  data-slide
+                  className="flex w-[300px] shrink-0 snap-start flex-col rounded-2xl border border-slate-200 bg-white p-7 sm:w-[360px]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <Stars n={r.rating} />
+                    {r.date && (
+                      <span className="text-xs font-medium text-slate-400">{r.date}</span>
+                    )}
+                  </div>
+                  {r.service && (
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-wider text-blue-700">
+                      {r.service}
+                    </p>
+                  )}
+                  <p className="mt-3 flex-1 text-slate-700">&ldquo;{r.text}&rdquo;</p>
+                  <div className="mt-6 border-t border-slate-100 pt-4">
+                    <p className="font-semibold text-slate-900">{r.name}</p>
+                  </div>
+                </div>
+              ))}
+        </HorizontalSlider>
+      </div>
+    </section>
   );
 }
 
@@ -301,23 +557,24 @@ export default function Home() {
               with the same care, cleanliness and workmanship guarantee.
             </p>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <HorizontalSlider label="Our services">
             {SERVICES.map((s, i) => (
               <div
                 key={s.title}
-                className="group rounded-2xl border border-slate-200 bg-white p-7 transition hover:border-blue-200 hover:shadow-xl"
+                data-slide
+                className="group flex w-[280px] shrink-0 snap-start flex-col rounded-2xl border border-slate-200 bg-white p-7 transition hover:border-blue-200 hover:shadow-xl sm:w-[320px]"
               >
                 <div className="grid h-12 w-12 place-items-center rounded-lg bg-blue-50 text-lg font-bold text-blue-700">
                   {String(i + 1).padStart(2, "0")}
                 </div>
                 <h3 className="mt-5 text-xl font-bold text-slate-900">{s.title}</h3>
-                <p className="mt-2 text-slate-600">{s.desc}</p>
+                <p className="mt-2 flex-1 text-slate-600">{s.desc}</p>
                 <a href="#contact" className="mt-5 inline-flex items-center text-sm font-semibold text-blue-700 group-hover:text-blue-800">
                   Book this service <span className="ml-1 transition group-hover:translate-x-1">→</span>
                 </a>
               </div>
             ))}
-          </div>
+          </HorizontalSlider>
         </div>
       </section>
 
@@ -389,28 +646,7 @@ export default function Home() {
       </section>
 
       {/* REVIEWS */}
-      <section id="reviews" className="py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="mx-auto mb-14 max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">Client stories</p>
-            <h2 className="mt-2 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
-              Trusted by homeowners across the area.
-            </h2>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {REVIEWS.map((r) => (
-              <div key={r.name} className="rounded-2xl border border-slate-200 bg-white p-7">
-                <div className="text-amber-500">★★★★★</div>
-                <p className="mt-4 text-slate-700">&ldquo;{r.text}&rdquo;</p>
-                <div className="mt-6 border-t border-slate-100 pt-4">
-                  <p className="font-semibold text-slate-900">{r.name}</p>
-                  <p className="text-sm text-slate-500">{r.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ReviewsSection />
 
       {/* CONTACT FORM #2 */}
       <section id="contact" className="bg-blue-700 py-24 text-white">
