@@ -21,8 +21,63 @@ The contact form uses a custom service-picker dropdown (animated, keyboard-
 dismissible, click-outside-to-close) populated from the same `SERVICES` list
 that drives the services grid.
 
-Forms use local React state — submission shows a success message. Wire them up
-to your backend (email API, Formspree, etc.) when going live.
+Submissions are delivered by [Formsubmit.co](https://formsubmit.co) — no
+backend required. The form POSTs JSON to their AJAX endpoint, which emails
+the destination address. Includes a honeypot field for bot protection,
+loading and error states, and `_replyto` is set to the customer's email so
+the owner can reply directly from their inbox.
+
+## Contact form delivery (Formsubmit.co)
+
+1. Set the destination in `.env.local`:
+   ```
+   NEXT_PUBLIC_FORMSUBMIT_ENDPOINT=your@email.com
+   ```
+2. Submit the form **once** from the live site. Formsubmit will email a
+   confirmation link to that address — click it to activate.
+3. From then on, every submission is delivered to the inbox.
+4. (Recommended) Once active, log into Formsubmit, grab the **hashed key**
+   (looks like `el/xxxxxxxx`), and replace the email in `.env.local` so the
+   raw address isn't visible in browser source.
+
+Free tier covers a generous monthly volume; there is no signup. If the env
+var is left unset, the form shows the success message without actually
+sending — useful for offline demos.
+
+## Owner / "Meet Vlad" section
+
+The About section content lives in the `OWNER` constant at the top of
+[`app/page.tsx`](app/page.tsx):
+
+```ts
+const OWNER = {
+  name: "Vlad",
+  tagline: "Honest work, on time, done right — every job.",
+  photo: "https://images.unsplash.com/...",  // see below
+  bio: [
+    "Hi, I'm Vlad — your local San Diego handyman...",
+    "I take one job at a time...",
+  ],
+  highlights: [
+    "10+ years on the job",
+    "Licensed & insured",
+    // ...
+  ],
+};
+```
+
+**To add the owner's real photo:** drop the file as `public/vlad.jpg` (any
+filename works) and change `photo` to `"/vlad.jpg"`. Or paste any hosted
+image URL (Cloudinary, S3, etc.).
+
+## Aggregate rating (single source of truth)
+
+Every "X.X ★" readout on the page (hero trust line, stats band, About
+badge) is computed once from the platform list in `REVIEW_PLATFORMS`
+(Thumbtack + Google) — `computeAggregateRating()` does a count-weighted
+average. Update the rating/count on a single platform and the number
+updates everywhere automatically. Platforms with `count: 0` are treated
+as placeholders and skipped.
 
 ## Live reviews from a Google Sheet (optional, no backend)
 
