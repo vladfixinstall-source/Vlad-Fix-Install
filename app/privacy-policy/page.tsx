@@ -296,8 +296,7 @@ export default function PrivacyPolicy() {
               V
             </span>
             <span>
-              © {new Date().getFullYear()} {COMPANY.name} · Licensed &amp;
-              insured
+              © {new Date().getFullYear()} {COMPANY.name} · Fully insured
             </span>
           </div>
           <div className="flex gap-6">

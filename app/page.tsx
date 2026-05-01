@@ -30,8 +30,8 @@ const SERVICE_RADIUS_MILES = 15;
 // `Average rating` is computed below from REVIEW_PLATFORMS so all rating
 // readouts on the page (hero, stats band, About badge) stay in sync.
 const STATS_BASE = [
-  { num: "10+", label: "Years on the job" },
-  { num: "3,500", label: "Jobs completed" },
+  { num: "4+", label: "Years specializing in installs" },
+  { num: "500+", label: "Jobs completed" },
   { num: "Same-Day", label: "Booking available" },
 ];
 
@@ -136,12 +136,12 @@ const OWNER = {
   // the URL for any image you host elsewhere.
   photo: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&q=80",
   bio: [
-    "Hi, I'm Vlad — your local San Diego handyman. After more than ten years in residential maintenance and home installations, I built Vlad Fix & Install to bring honest, careful work to homeowners across the county.",
-    "I take one job at a time, treat every project like it's my own home, and stand behind every install with a workmanship guarantee. Whether it's a quick TV mount or a full punch list, I'll show up on time, clean up before I leave, and make sure you're happy with the result.",
+    "Hi, I'm Vlad — your local San Diego handyman. Over the last four years I've focused on what most homeowners actually need: clean, careful installations and small repairs done right the first time. TV mounts, smart locks, ceiling fans, faucets, shelves — by treating every job like it's in my own home, I've built Vlad Fix & Install on a simple promise.",
+    "I take one customer at a time, never stack appointments back-to-back, and stand behind every install with a workmanship guarantee. You'll always know exactly what you're paying for before I lift a tool — no surprises on the bill, no rushed corners, and the work area cleaner than I found it.",
   ],
   highlights: [
-    "10+ years on the job",
-    "Licensed & insured",
+    "4+ years specializing in home installations",
+    "Fully insured",
     "Same-day booking, weekend slots",
     "Workmanship guarantee on every install",
   ],
@@ -674,7 +674,7 @@ function ContactForm({ id, compact = false }: { id: string; compact?: boolean })
           <button
             type="submit"
             disabled={submitting}
-            className="mt-2 inline-flex items-center justify-center rounded-lg bg-blue-700 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-70"
+            className="btn-primary mt-2 inline-flex items-center justify-center rounded-lg bg-blue-700 px-6 py-3.5 text-sm font-semibold text-white hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {submitting ? (
               <>
@@ -711,7 +711,7 @@ export default function Home() {
           </nav>
           <a
             href="#contact"
-            className="hidden rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-800 md:inline-block"
+            className="btn-primary hidden rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800 md:inline-block"
           >
             Free Estimate
           </a>
@@ -723,20 +723,21 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-12 lg:py-28">
           <div className="lg:col-span-7">
             <p className="mb-4 inline-block rounded-full bg-blue-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-blue-700">
-              Your Trusted Local Handyman · Same-Day Service
+              Trusted San Diego Handyman · 4+ Years of Quality Installs
             </p>
             <h1 className="text-5xl font-bold leading-[1.05] tracking-tight text-slate-900 md:text-6xl lg:text-7xl">
               Fix it. Install it. <span className="text-blue-700">Done right.</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg text-slate-600">
               TV mounting, smart locks, ceiling fans, faucets, shelves and every
-              small repair in between — handled by one reliable pro. Honest pricing,
-              clean work, and a workmanship guarantee on every job.
+              small repair in between — handled by one focused pro with four years
+              of dedicated install experience. Honest pricing, clean work, and a
+              workmanship guarantee on every job.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <a
                 href="#contact"
-                className="rounded-lg bg-blue-700 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800"
+                className="btn-primary rounded-lg bg-blue-700 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800"
               >
                 Get Free Estimate
               </a>
@@ -757,7 +758,7 @@ export default function Home() {
                   <span>· {AGGREGATE_RATING.count} verified reviews</span>
                 </div>
               )}
-              <div>Licensed &amp; insured</div>
+              <div>Fully insured</div>
               <div>Same-day booking</div>
               <div>Workmanship guarantee</div>
             </div>
@@ -818,7 +819,7 @@ export default function Home() {
             </ul>
             <a
               href="#contact"
-              className="mt-10 inline-flex items-center rounded-lg bg-blue-700 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800"
+              className="btn-primary mt-10 inline-flex items-center rounded-lg bg-blue-700 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800"
             >
               Get in touch with me
               <span className="ml-2">→</span>
@@ -1007,7 +1008,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 md:flex-row">
           <div className="flex items-center gap-2">
             <span className="grid h-7 w-7 place-items-center rounded bg-blue-700 text-xs font-bold text-white">V</span>
-            <span>© {new Date().getFullYear()} Vlad Fix &amp; Install · Licensed &amp; insured</span>
+            <span>© {new Date().getFullYear()} Vlad Fix &amp; Install · Fully insured</span>
           </div>
           <div className="flex gap-6">
             <Link href="/privacy-policy" className="hover:text-white">Privacy</Link>

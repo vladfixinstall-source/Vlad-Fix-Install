@@ -59,8 +59,8 @@ const OWNER = {
     "I take one job at a time...",
   ],
   highlights: [
-    "10+ years on the job",
-    "Licensed & insured",
+    "4+ years specializing in home installations",
+    "Fully insured",
     // ...
   ],
 };
