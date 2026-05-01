@@ -1010,9 +1010,9 @@ export default function Home() {
             <span>© {new Date().getFullYear()} Vlad Fix &amp; Install · Licensed &amp; insured</span>
           </div>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-white">Privacy</a>
-            <a href="#" className="hover:text-white">Terms</a>
-            <a href="#" className="hover:text-white">Sitemap</a>
+            <Link href="/privacy-policy" className="hover:text-white">Privacy</Link>
+            <a href="#contact" className="hover:text-white">Contact</a>
+            <a href="#about" className="hover:text-white">About</a>
           </div>
         </div>
       </footer>
