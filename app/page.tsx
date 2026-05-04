@@ -110,7 +110,7 @@ const REVIEW_PLATFORMS: ReviewPlatform[] = [
     name: "Google",
     rating: 0,    // TODO: set the real average from Google Business Profile
     count: 0,     // TODO: set the real review count
-    href: "#",    // TODO: replace with the Google review link (e.g. https://g.page/r/.../review)
+    href: "https://maps.app.goo.gl/BHJ3cP1DUU2j7NvD6",
     cta: "Review us on Google",
     buttonBg: "#1A73E8",
     badge: <GoogleBadge />,
@@ -126,8 +126,6 @@ function computeAggregateRating(platforms: ReviewPlatform[]) {
   const totalScore = active.reduce((s, p) => s + p.rating * p.count, 0);
   return { rating: totalScore / totalCount, count: totalCount };
 }
-
-const AGGREGATE_RATING = computeAggregateRating(REVIEW_PLATFORMS);
 
 const OWNER = {
   name: "Vlad",
@@ -179,6 +177,87 @@ function parseCSV(text: string): string[][] {
   }
   if (field !== "" || row.length) { row.push(field); rows.push(row); }
   return rows.filter((r) => r.some((c) => c.trim() !== ""));
+}
+
+// Optional override of REVIEW_PLATFORMS rating/count/href from the same
+// Google Sheet. Owner adds a tab named exactly "Platforms" with first-row
+// headers: name, rating, count, href. Each row's `name` matches a platform
+// in REVIEW_PLATFORMS (case-insensitive). Empty cells fall back to the
+// in-code defaults.
+//
+// Uses the gviz JSON endpoint (not CSV) on purpose: Sheets will sometimes
+// auto-interpret a column like "5.0" as a date. JSON gives us both the raw
+// value `v` and the formatted display `f`, so we can read whatever the
+// user actually sees in the cell, regardless of cell type.
+type GvizCell = { v?: string | number | null; f?: string } | null;
+
+function gvizCellString(cell: GvizCell): string {
+  if (!cell) return "";
+  if (typeof cell.f === "string") return cell.f.trim();
+  if (cell.v == null) return "";
+  return String(cell.v).trim();
+}
+
+function gvizCellNumber(cell: GvizCell): number | undefined {
+  const s = gvizCellString(cell);
+  if (!s) return undefined;
+  // Tolerate locale-formatted decimals like "5,0"
+  const n = Number(s.replace(",", "."));
+  return Number.isFinite(n) && n >= 0 ? n : undefined;
+}
+
+async function fetchSheetPlatforms(sheetId: string): Promise<Partial<ReviewPlatform>[]> {
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Platforms`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const text = await res.text();
+
+  // Strip the JSONP wrapper: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
+  const start = text.indexOf("(");
+  const end = text.lastIndexOf(")");
+  if (start < 0 || end <= start) return [];
+  const data = JSON.parse(text.slice(start + 1, end)) as {
+    status?: string;
+    table?: { cols?: Array<{ label?: string }>; rows?: Array<{ c: GvizCell[] }> };
+  };
+  if (data.status !== "ok" || !data.table?.rows || !data.table.cols) return [];
+
+  const cols = data.table.cols.map((c) => (c.label ?? "").trim().toLowerCase());
+  const ni = cols.indexOf("name");
+  const rti = cols.indexOf("rating");
+  const ci = cols.indexOf("count");
+  const hi = cols.indexOf("href");
+
+  return data.table.rows
+    .map<Partial<ReviewPlatform>>((row) => {
+      const c = row.c ?? [];
+      const href = hi >= 0 ? gvizCellString(c[hi]) : "";
+      return {
+        name: ni >= 0 ? gvizCellString(c[ni]) : "",
+        rating: rti >= 0 ? gvizCellNumber(c[rti]) : undefined,
+        count: ci >= 0 ? gvizCellNumber(c[ci]) : undefined,
+        href: href || undefined,
+      };
+    })
+    .filter((p) => Boolean(p.name));
+}
+
+function mergePlatforms(
+  defaults: ReviewPlatform[],
+  overrides: Partial<ReviewPlatform>[],
+): ReviewPlatform[] {
+  return defaults.map((d) => {
+    const o = overrides.find(
+      (x) => x.name?.toLowerCase() === d.name.toLowerCase(),
+    );
+    if (!o) return d;
+    return {
+      ...d,
+      rating: typeof o.rating === "number" ? o.rating : d.rating,
+      count: typeof o.count === "number" ? o.count : d.count,
+      href: o.href || d.href,
+    };
+  });
 }
 
 async function fetchSheetReviews(sheetId: string): Promise<Review[]> {
@@ -463,7 +542,22 @@ function ReviewPlatformCard({ platform: p }: { platform: ReviewPlatform }) {
   );
 }
 
-function ReviewsSection() {
+function ReviewPlatformSkeleton() {
+  return (
+    <div className="flex animate-pulse flex-col items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <div className="flex items-center gap-4">
+        <div className="h-11 w-11 shrink-0 rounded-full bg-slate-200" />
+        <div className="space-y-2">
+          <div className="h-5 w-36 rounded bg-slate-200" />
+          <div className="h-4 w-44 rounded bg-slate-200" />
+        </div>
+      </div>
+      <div className="h-10 w-44 rounded-lg bg-slate-200" />
+    </div>
+  );
+}
+
+function ReviewsSection({ platforms }: { platforms: ReviewPlatform[] | null }) {
   const [reviews, setReviews] = useState<Review[]>(REVIEWS);
   const [loading, setLoading] = useState<boolean>(Boolean(REVIEWS_SHEET_ID));
 
@@ -487,9 +581,13 @@ function ReviewsSection() {
           </h2>
         </div>
         <div className="mb-12 grid gap-4 md:grid-cols-2">
-          {REVIEW_PLATFORMS.map((p) => (
-            <ReviewPlatformCard key={p.name} platform={p} />
-          ))}
+          {platforms === null
+            ? Array.from({ length: 2 }).map((_, i) => (
+                <ReviewPlatformSkeleton key={i} />
+              ))
+            : platforms.map((p) => (
+                <ReviewPlatformCard key={p.name} platform={p} />
+              ))}
         </div>
         <HorizontalSlider label="Customer reviews">
           {loading
@@ -692,6 +790,37 @@ function ContactForm({ id, compact = false }: { id: string; compact?: boolean })
 }
 
 export default function Home() {
+  // Platforms come from the Sheet's "Platforms" tab. While that fetch is in
+  // flight, `platforms` stays `null` and the page renders skeletons. If the
+  // sheet is unreachable (no ID, network error, missing tab, empty tab),
+  // fall back to the in-code REVIEW_PLATFORMS so the page never stays blank.
+  const [platforms, setPlatforms] = useState<ReviewPlatform[] | null>(
+    REVIEWS_SHEET_ID ? null : REVIEW_PLATFORMS,
+  );
+
+  useEffect(() => {
+    if (!REVIEWS_SHEET_ID) return;
+    let cancelled = false;
+    fetchSheetPlatforms(REVIEWS_SHEET_ID)
+      .then((overrides) => {
+        if (cancelled) return;
+        setPlatforms(
+          overrides.length > 0
+            ? mergePlatforms(REVIEW_PLATFORMS, overrides)
+            : REVIEW_PLATFORMS,
+        );
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setPlatforms(REVIEW_PLATFORMS);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const aggregate = platforms ? computeAggregateRating(platforms) : null;
+
   return (
     <main className="min-h-screen bg-white text-slate-900">
       {/* HEADER */}
@@ -749,15 +878,20 @@ export default function Home() {
               </a>
             </div>
             <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4 text-sm text-slate-500">
-              {AGGREGATE_RATING.count > 0 && (
+              {aggregate === null ? (
                 <div className="flex items-center gap-2">
-                  <Stars n={AGGREGATE_RATING.rating} />
-                  <span className="font-semibold text-slate-900">
-                    {AGGREGATE_RATING.rating.toFixed(1)}
-                  </span>
-                  <span>· {AGGREGATE_RATING.count} verified reviews</span>
+                  <span className="h-4 w-24 animate-pulse rounded bg-slate-200" />
+                  <span className="h-4 w-32 animate-pulse rounded bg-slate-200" />
                 </div>
-              )}
+              ) : aggregate.count > 0 ? (
+                <div className="flex items-center gap-2">
+                  <Stars n={aggregate.rating} />
+                  <span className="font-semibold text-slate-900">
+                    {aggregate.rating.toFixed(1)}
+                  </span>
+                  <span>· {aggregate.count} verified reviews</span>
+                </div>
+              ) : null}
               <div>Fully insured</div>
               <div>Same-day booking</div>
               <div>Workmanship guarantee</div>
@@ -781,19 +915,27 @@ export default function Home() {
                 aria-label={`Photo of ${OWNER.name}`}
               />
             </div>
-            {AGGREGATE_RATING.count > 0 && (
+            {aggregate === null ? (
+              <div className="absolute -bottom-6 left-6 animate-pulse rounded-2xl bg-white p-5 shadow-xl ring-1 ring-slate-200 lg:-right-6 lg:left-auto">
+                <div className="flex items-center gap-3">
+                  <span className="h-5 w-24 rounded bg-slate-200" />
+                  <span className="h-5 w-8 rounded bg-slate-200" />
+                </div>
+                <span className="mt-2 block h-3 w-32 rounded bg-slate-200" />
+              </div>
+            ) : aggregate.count > 0 ? (
               <div className="absolute -bottom-6 left-6 rounded-2xl bg-white p-5 shadow-xl ring-1 ring-slate-200 lg:-right-6 lg:left-auto">
                 <div className="flex items-center gap-3">
-                  <Stars n={AGGREGATE_RATING.rating} />
+                  <Stars n={aggregate.rating} />
                   <span className="text-lg font-bold text-slate-900">
-                    {AGGREGATE_RATING.rating.toFixed(1)}
+                    {aggregate.rating.toFixed(1)}
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-slate-500">
-                  From {AGGREGATE_RATING.count} verified reviews
+                  From {aggregate.count} verified reviews
                 </p>
               </div>
-            )}
+            ) : null}
           </div>
           <div className="lg:col-span-7">
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">
@@ -891,13 +1033,18 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-6 md:grid-cols-4">
           {[
             ...STATS_BASE.slice(0, 2),
-            {
-              num: AGGREGATE_RATING.count > 0 ? `${AGGREGATE_RATING.rating.toFixed(1)}★` : "—",
-              label:
-                AGGREGATE_RATING.count > 0
-                  ? `Avg. rating · ${AGGREGATE_RATING.count} reviews`
-                  : "Average rating",
-            },
+            aggregate === null
+              ? {
+                  num: <span className="mx-auto block h-12 w-24 animate-pulse rounded bg-slate-200 md:h-16" />,
+                  label: "Average rating",
+                }
+              : {
+                  num: aggregate.count > 0 ? `${aggregate.rating.toFixed(1)}★` : "—",
+                  label:
+                    aggregate.count > 0
+                      ? `Avg. rating · ${aggregate.count} reviews`
+                      : "Average rating",
+                },
             ...STATS_BASE.slice(2),
           ].map((s) => (
             <div key={s.label} className="text-center">
@@ -940,7 +1087,7 @@ export default function Home() {
       </section>
 
       {/* REVIEWS */}
-      <ReviewsSection />
+      <ReviewsSection platforms={platforms} />
 
       {/* CONTACT FORM #2 */}
       <section id="contact" className="bg-blue-700 py-24 text-white">
