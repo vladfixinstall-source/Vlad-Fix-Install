@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import CookieBanner from "./CookieBanner";
+import CookieBanner from "./components/CookieBanner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const playfair = Playfair_Display({

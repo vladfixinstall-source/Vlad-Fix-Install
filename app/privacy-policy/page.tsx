@@ -1,20 +1,19 @@
+// Privacy Policy — server-rendered static page. Body content uses an inline
+// <Section> helper for consistent heading/spacing. Brand-level constants
+// (COMPANY) are shared with the rest of the site via lib/content.
+
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { COMPANY, LOGO } from "../lib/content";
+import { Footer } from "../components/sections/Footer";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Vlad Fix & Install",
-  description:
-    "How Vlad Fix & Install collects, uses and protects information you submit through our website and contact forms.",
+  title: `Privacy Policy — ${COMPANY.name}`,
+  description: `How ${COMPANY.name} collects, uses and protects information you submit through our website and contact forms.`,
 };
 
 const EFFECTIVE_DATE = "May 1, 2026";
-
-const COMPANY = {
-  name: "Vlad Fix & Install",
-  email: "khanasykv@gmail.com",
-  phone: "(760) 626-4981",
-  area: "San Diego, CA",
-};
 
 function Section({
   id,
@@ -40,14 +39,20 @@ function Section({
 export default function PrivacyPolicy() {
   return (
     <main className="min-h-screen bg-white text-slate-900">
-      {/* HEADER */}
+      {/* HEADER — simpler than the home page (no anchor nav, just back link) */}
       <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-blue-700 font-bold text-white">
-              V
+          <Link href="/" className="flex items-center" aria-label={COMPANY.name}>
+            <span className="relative block h-12 w-40 sm:h-14 sm:w-48">
+              <Image
+                src={LOGO.src}
+                alt={LOGO.alt}
+                fill
+                priority
+                sizes="(max-width: 640px) 160px, 192px"
+                className="object-contain object-left"
+              />
             </span>
-            <span className="text-xl font-bold tracking-tight">{COMPANY.name}</span>
           </Link>
           <Link
             href="/"
@@ -275,7 +280,7 @@ export default function PrivacyPolicy() {
               Phone:{" "}
               <a
                 className="font-medium text-blue-700 underline hover:text-blue-800"
-                href="tel:+17606264981"
+                href={`tel:${COMPANY.phoneTel}`}
               >
                 {COMPANY.phone}
               </a>
@@ -288,30 +293,7 @@ export default function PrivacyPolicy() {
         </p>
       </article>
 
-      {/* FOOTER */}
-      <footer className="bg-slate-900 py-10 text-sm text-slate-400">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 md:flex-row">
-          <div className="flex items-center gap-2">
-            <span className="grid h-7 w-7 place-items-center rounded bg-blue-700 text-xs font-bold text-white">
-              V
-            </span>
-            <span>
-              © {new Date().getFullYear()} {COMPANY.name} · Fully insured
-            </span>
-          </div>
-          <div className="flex gap-6">
-            <Link href="/privacy-policy" className="font-semibold text-white">
-              Privacy
-            </Link>
-            <a href="/#contact" className="hover:text-white">
-              Contact
-            </a>
-            <Link href="/" className="hover:text-white">
-              Home
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <Footer privacyActive />
     </main>
   );
 }
