@@ -1,0 +1,171 @@
+.section {
+  padding: 6rem 0;
+}
+.inner {
+  margin: 0 auto;
+  max-width: var(--container-max);
+  padding-inline: var(--container-px);
+}
+.header {
+  margin: 0 auto 2.5rem;
+  max-width: 42rem;
+  text-align: center;
+}
+.eyebrow {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-blue-700);
+}
+.heading {
+  margin-top: 0.5rem;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  color: var(--c-slate-900);
+}
+@media (min-width: 768px) {
+  .heading {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+.platformGrid {
+  margin-bottom: 3rem;
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  .platformGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Individual review card */
+.card {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  width: 300px;
+  padding: 1.75rem;
+  border-radius: 1rem;
+  border: 1px solid var(--c-slate-200);
+  background: var(--c-white);
+}
+@media (min-width: 640px) {
+  .card {
+    width: 360px;
+  }
+}
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.cardDate {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  color: var(--c-slate-400);
+}
+.cardService {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-blue-700);
+}
+.cardText {
+  margin-top: 0.75rem;
+  flex: 1;
+  color: var(--c-slate-700);
+}
+.cardFooter {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--c-slate-100);
+}
+.cardName {
+  font-weight: 600;
+  color: var(--c-slate-900);
+}
+
+/* Skeleton variant */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  width: 300px;
+  padding: 1.75rem;
+  border-radius: 1rem;
+  border: 1px solid var(--c-slate-200);
+  background: var(--c-white);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@media (min-width: 640px) {
+  .skeleton {
+    width: 360px;
+  }
+}
+.skeletonHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.skeletonStars {
+  width: 6rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  background: var(--c-slate-200);
+}
+.skeletonDate {
+  width: 5rem;
+  height: 0.75rem;
+  border-radius: 0.25rem;
+  background: var(--c-slate-200);
+}
+.skeletonService {
+  margin-top: 0.75rem;
+  width: 8rem;
+  height: 0.75rem;
+  border-radius: 0.25rem;
+  background: var(--c-slate-200);
+}
+.skeletonTextBlock {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.skeletonTextLine1 {
+  width: 100%;
+  height: 0.75rem;
+  border-radius: 0.25rem;
+  background: var(--c-slate-200);
+}
+.skeletonTextLine2 {
+  width: 83.33%;
+  height: 0.75rem;
+  border-radius: 0.25rem;
+  background: var(--c-slate-200);
+}
+.skeletonTextLine3 {
+  width: 66.67%;
+  height: 0.75rem;
+  border-radius: 0.25rem;
+  background: var(--c-slate-200);
+}
+.skeletonName {
+  width: 8rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  background: var(--c-slate-200);
+}

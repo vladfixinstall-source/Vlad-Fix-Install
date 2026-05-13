@@ -1,0 +1,115 @@
+.banner {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 60;
+  margin-inline: auto;
+  max-width: 48rem; /* max-w-3xl */
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--c-slate-200);
+  background: var(--c-white);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(15, 23, 42, 0.05);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+@media (min-width: 640px) {
+  .banner {
+    bottom: 1.5rem;
+    padding: 1.5rem;
+  }
+}
+.bannerShown {
+  opacity: 1;
+  transform: translateY(0);
+}
+.bannerHidden {
+  opacity: 0;
+  transform: translateY(1rem);
+  pointer-events: none;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.copy {
+  flex: 1;
+}
+@media (min-width: 640px) {
+  .copy {
+    padding-right: 1rem;
+  }
+}
+.title {
+  font-weight: 600;
+  color: var(--c-slate-900);
+}
+.text {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--c-slate-600);
+}
+.link {
+  font-weight: 500;
+  color: var(--c-blue-700);
+  text-decoration: underline;
+}
+.link:hover {
+  color: var(--c-blue-800);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+@media (min-width: 640px) {
+  .actions {
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+}
+
+.decline {
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--c-slate-300);
+  background: var(--c-white);
+  color: var(--c-slate-700);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.decline:hover {
+  border-color: var(--c-slate-400);
+  background: var(--c-slate-50);
+}
+
+.accept {
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--c-blue-700);
+  color: var(--c-white);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+.accept:hover {
+  background: var(--c-blue-800);
+}

@@ -1,0 +1,14 @@
+.chevron {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--c-slate-400);
+  transition: transform 200ms ease;
+}
+.chevronOpen {
+  transform: rotate(180deg);
+}
+.check {
+  width: 1rem;
+  height: 1rem;
+  color: var(--c-blue-700);
+}

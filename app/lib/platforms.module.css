@@ -1,0 +1,27 @@
+/* Shared sizing for both review-platform badges */
+.badge {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+}
+
+/* Thumbtack: solid brand-blue circle with a white "T" */
+.thumbtack {
+  color: var(--c-white);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+/* Google: white circle with a thin slate ring, multicolor "G" inside */
+.google {
+  background: var(--c-white);
+  border: 1px solid var(--c-slate-200);
+}
+.googleIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+}

@@ -1,20 +1,18 @@
+// Privacy Policy — server-rendered static page.
+
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { COMPANY, LOGO } from "../lib/content";
+import { Footer } from "../components/sections/Footer";
+import styles from "./PrivacyPolicy.module.css";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Vlad Fix & Install",
-  description:
-    "How Vlad Fix & Install collects, uses and protects information you submit through our website and contact forms.",
+  title: `Privacy Policy — ${COMPANY.name}`,
+  description: `How ${COMPANY.name} collects, uses and protects information you submit through our website and contact forms.`,
 };
 
 const EFFECTIVE_DATE = "May 1, 2026";
-
-const COMPANY = {
-  name: "Vlad Fix & Install",
-  email: "khanasykv@gmail.com",
-  phone: "(760) 626-4981",
-  area: "San Diego, CA",
-};
 
 function Section({
   id,
@@ -26,48 +24,41 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="mt-12 scroll-mt-24">
-      <h2 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
-        {title}
-      </h2>
-      <div className="mt-4 space-y-4 text-slate-700 leading-relaxed">
-        {children}
-      </div>
+    <section id={id} className={styles.section}>
+      <h2 className={styles.sectionHeading}>{title}</h2>
+      <div className={styles.sectionBody}>{children}</div>
     </section>
   );
 }
 
 export default function PrivacyPolicy() {
   return (
-    <main className="min-h-screen bg-white text-slate-900">
-      {/* HEADER */}
-      <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-blue-700 font-bold text-white">
-              V
+    <main className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.headerInner}>
+          <Link href="/" className={styles.logoLink} aria-label={COMPANY.name}>
+            <span className={styles.logoBox}>
+              <Image
+                src={LOGO.src}
+                alt={LOGO.alt}
+                fill
+                priority
+                sizes="(max-width: 640px) 72px, 86px"
+                className={styles.logoImg}
+              />
             </span>
-            <span className="text-xl font-bold tracking-tight">{COMPANY.name}</span>
           </Link>
-          <Link
-            href="/"
-            className="text-sm font-medium text-slate-700 hover:text-blue-700"
-          >
+          <Link href="/" className={styles.backLink}>
             <span aria-hidden="true">←</span> Back to home
           </Link>
         </div>
       </header>
 
-      {/* HERO */}
-      <section className="bg-gradient-to-br from-slate-50 via-white to-blue-50 py-16 md:py-20">
-        <div className="mx-auto max-w-3xl px-6">
-          <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">
-            Legal
-          </p>
-          <h1 className="mt-2 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
-            Privacy Policy
-          </h1>
-          <p className="mt-4 text-slate-600">
+      <section className={styles.hero}>
+        <div className={styles.heroInner}>
+          <p className={styles.eyebrow}>Legal</p>
+          <h1 className={styles.title}>Privacy Policy</h1>
+          <p className={styles.intro}>
             Effective {EFFECTIVE_DATE}. This policy explains how {COMPANY.name}
             {" "}collects, uses and protects the information you submit through
             our website or contact forms.
@@ -75,8 +66,7 @@ export default function PrivacyPolicy() {
         </div>
       </section>
 
-      {/* CONTENT */}
-      <article className="mx-auto max-w-3xl px-6 py-16">
+      <article className={styles.article}>
         <Section id="introduction" title="1. Introduction">
           <p>
             {COMPANY.name} (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;)
@@ -92,19 +82,16 @@ export default function PrivacyPolicy() {
         </Section>
 
         <Section id="information-we-collect" title="2. Information We Collect">
-          <h3 className="text-lg font-semibold text-slate-900">
-            Information you provide
-          </h3>
+          <h3 className={styles.subhead}>Information you provide</h3>
           <p>When you submit a contact form on this site, we collect:</p>
-          <ul className="list-disc space-y-1 pl-6">
+          <ul className={`${styles.list} ${styles.listTight}`}>
             <li>First and last name</li>
             <li>Email address</li>
             <li>Phone number</li>
             <li>The service category you selected</li>
             <li>Any details you write in the message field</li>
           </ul>
-
-          <h3 className="mt-6 text-lg font-semibold text-slate-900">
+          <h3 className={`${styles.subhead} ${styles.subheadMt}`}>
             Information collected automatically
           </h3>
           <p>
@@ -116,7 +103,7 @@ export default function PrivacyPolicy() {
         </Section>
 
         <Section id="how-we-use" title="3. How We Use Your Information">
-          <ul className="list-disc space-y-2 pl-6">
+          <ul className={`${styles.list} ${styles.listGap}`}>
             <li>To respond to your inquiry and provide a free estimate.</li>
             <li>To schedule, perform and follow up on requested services.</li>
             <li>
@@ -141,7 +128,7 @@ export default function PrivacyPolicy() {
             {" "}We share information only with the limited set of service
             providers we use to operate the site:
           </p>
-          <ul className="list-disc space-y-2 pl-6">
+          <ul className={`${styles.list} ${styles.listGap}`}>
             <li>
               <strong>Formsubmit.co</strong> — receives the contents of contact-
               form submissions for the sole purpose of delivering them to our
@@ -214,7 +201,7 @@ export default function PrivacyPolicy() {
             <strong>California residents (CCPA / CPRA).</strong> California law
             gives you the right to:
           </p>
-          <ul className="list-disc space-y-2 pl-6">
+          <ul className={`${styles.list} ${styles.listGap}`}>
             <li>Know what personal information we have collected about you.</li>
             <li>Request a copy of that information in a portable format.</li>
             <li>Request deletion of your personal information.</li>
@@ -228,10 +215,7 @@ export default function PrivacyPolicy() {
           </ul>
           <p>
             To exercise these rights, email{" "}
-            <a
-              className="font-medium text-blue-700 underline hover:text-blue-800"
-              href={`mailto:${COMPANY.email}`}
-            >
+            <a className={styles.link} href={`mailto:${COMPANY.email}`}>
               {COMPANY.email}
             </a>
             {" "}with the subject line &ldquo;Privacy Request&rdquo;. We will
@@ -259,59 +243,28 @@ export default function PrivacyPolicy() {
 
         <Section id="contact" title="12. Contact Us">
           <p>If you have questions about this policy or your information:</p>
-          <div className="mt-2 rounded-2xl border border-slate-200 bg-slate-50 p-6">
-            <p className="font-semibold text-slate-900">{COMPANY.name}</p>
-            <p className="mt-1 text-slate-700">{COMPANY.area}</p>
-            <p className="mt-3 text-slate-700">
+          <div className={styles.contactCard}>
+            <p className={styles.contactName}>{COMPANY.name}</p>
+            <p className={styles.contactArea}>{COMPANY.area}</p>
+            <p className={styles.contactLine}>
               Email:{" "}
-              <a
-                className="font-medium text-blue-700 underline hover:text-blue-800"
-                href={`mailto:${COMPANY.email}`}
-              >
+              <a className={styles.link} href={`mailto:${COMPANY.email}`}>
                 {COMPANY.email}
               </a>
             </p>
-            <p className="text-slate-700">
+            <p className={styles.contactLineTight}>
               Phone:{" "}
-              <a
-                className="font-medium text-blue-700 underline hover:text-blue-800"
-                href="tel:+17606264981"
-              >
+              <a className={styles.link} href={`tel:${COMPANY.phoneTel}`}>
                 {COMPANY.phone}
               </a>
             </p>
           </div>
         </Section>
 
-        <p className="mt-12 text-sm text-slate-500">
-          Effective {EFFECTIVE_DATE}.
-        </p>
+        <p className={styles.effective}>Effective {EFFECTIVE_DATE}.</p>
       </article>
 
-      {/* FOOTER */}
-      <footer className="bg-slate-900 py-10 text-sm text-slate-400">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 md:flex-row">
-          <div className="flex items-center gap-2">
-            <span className="grid h-7 w-7 place-items-center rounded bg-blue-700 text-xs font-bold text-white">
-              V
-            </span>
-            <span>
-              © {new Date().getFullYear()} {COMPANY.name} · Fully insured
-            </span>
-          </div>
-          <div className="flex gap-6">
-            <Link href="/privacy-policy" className="font-semibold text-white">
-              Privacy
-            </Link>
-            <a href="/#contact" className="hover:text-white">
-              Contact
-            </a>
-            <Link href="/" className="hover:text-white">
-              Home
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <Footer privacyActive />
     </main>
   );
 }

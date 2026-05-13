@@ -73,11 +73,39 @@ image URL (Cloudinary, S3, etc.).
 ## Aggregate rating (single source of truth)
 
 Every "X.X ★" readout on the page (hero trust line, stats band, About
-badge) is computed once from the platform list in `REVIEW_PLATFORMS`
-(Thumbtack + Google) — `computeAggregateRating()` does a count-weighted
-average. Update the rating/count on a single platform and the number
-updates everywhere automatically. Platforms with `count: 0` are treated
-as placeholders and skipped.
+badge) is computed from the platform list (Thumbtack + Google) —
+`computeAggregateRating()` does a count-weighted average. Platforms
+with `count: 0` are treated as placeholders and skipped.
+
+The platform list comes from in-code defaults (`REVIEW_PLATFORMS`),
+**optionally overridden by a "Platforms" tab in the same Google Sheet**
+that powers individual reviews. This lets the owner update rating/count
+per platform without touching code.
+
+## Platform overrides via the "Platforms" sheet tab (optional)
+
+In the same Google Sheet that holds reviews, add a second tab named
+exactly **`Platforms`** (case-sensitive) with first-row headers
+(lowercase, exact):
+
+| name | rating | count | href |
+|---|---|---|---|
+
+- **name** — must match a platform in `REVIEW_PLATFORMS` (case-insensitive),
+  e.g. `Thumbtack` or `Google`
+- **rating** — average rating, e.g. `5.0`
+- **count** — total number of reviews, e.g. `11`
+- **href** — full profile URL the platform's CTA button links to
+
+Empty cells in any column fall back to the in-code default for that
+platform. Rows whose `name` doesn't match any defined platform are
+ignored. The fetch happens client-side on page mount; if the tab is
+missing or unreadable, the page silently falls back to the in-code
+defaults — so this is purely additive.
+
+Update a single cell to change the rating everywhere on the site
+(hero trust line, stats band, About badge, trust-widget cards, and
+the count-weighted aggregate).
 
 ## Live reviews from a Google Sheet (optional, no backend)
 

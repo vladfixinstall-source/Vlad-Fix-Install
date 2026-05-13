@@ -1,0 +1,134 @@
+.section {
+  padding: 6rem 0;
+  background: var(--c-blue-700);
+  color: var(--c-white);
+}
+.grid {
+  margin: 0 auto;
+  max-width: var(--container-max);
+  padding-inline: var(--container-px);
+  display: grid;
+  gap: 3rem;
+}
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.eyebrow {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-blue-200);
+}
+.heading {
+  margin-top: 0.5rem;
+  font-size: 2.25rem;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+@media (min-width: 768px) {
+  .heading {
+    font-size: 3rem;
+  }
+}
+.intro {
+  margin-top: 1.25rem;
+  max-width: 28rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  color: var(--c-blue-100);
+}
+
+.infoGrid {
+  margin-top: 2.5rem;
+  display: grid;
+  gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .infoGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.infoLabel {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-blue-200);
+}
+.infoPhone {
+  margin-top: 0.25rem;
+  display: block;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+}
+.infoEmail {
+  margin-top: 0.25rem;
+  display: block;
+  word-break: break-all;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+}
+.infoBig {
+  margin-top: 0.25rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+}
+.infoSmall {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--c-blue-100);
+}
+
+.zipBox {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: rgba(30, 64, 175, 0.4);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.zipHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.zipMeta {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--c-blue-200);
+}
+.zipList {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.zipPill {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+}
+.zipFootnote {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--c-blue-200);
+}
