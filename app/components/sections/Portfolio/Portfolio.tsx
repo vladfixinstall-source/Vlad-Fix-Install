@@ -1,9 +1,19 @@
-// Portfolio gallery — example job photos with hover-zoom on the image.
+"use client";
 
-import { PROJECTS } from "../../../lib/content";
+// Portfolio gallery — first FEATURED_PROJECT_COUNT photos in a grid; clicking
+// any card or the "See all jobs" button opens the Lightbox with the full
+// PROJECTS list and the right starting index.
+
+import { useState } from "react";
+import { FEATURED_PROJECT_COUNT, PROJECTS } from "../../../lib/content";
+import { Lightbox } from "../../Lightbox";
 import styles from "./Portfolio.module.css";
 
 export function Portfolio() {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const featured = PROJECTS.slice(0, FEATURED_PROJECT_COUNT);
+  const extra = Math.max(0, PROJECTS.length - FEATURED_PROJECT_COUNT);
+
   return (
     <section id="portfolio" className={styles.section}>
       <div className={styles.inner}>
@@ -17,8 +27,14 @@ export function Portfolio() {
           </a>
         </div>
         <div className={styles.grid}>
-          {PROJECTS.map((p, i) => (
-            <div key={i} className={styles.card}>
+          {featured.map((p, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setLightboxIndex(i)}
+              className={styles.card}
+              aria-label={`Open photo: ${p.label}`}
+            >
               <div className={styles.imageBox}>
                 <div
                   className={styles.image}
@@ -29,10 +45,31 @@ export function Portfolio() {
                 <p className={styles.cardEyebrow}>Recent Job</p>
                 <h3 className={styles.cardTitle}>{p.label}</h3>
               </div>
-            </div>
+            </button>
           ))}
         </div>
+
+        {extra > 0 && (
+          <div className={styles.seeMore}>
+            <button
+              type="button"
+              onClick={() => setLightboxIndex(0)}
+              className={styles.seeMoreBtn}
+            >
+              See all jobs
+              <span className={styles.seeMoreCount}>+{extra} more</span>
+            </button>
+          </div>
+        )}
       </div>
+
+      {lightboxIndex !== null && (
+        <Lightbox
+          photos={PROJECTS}
+          startIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </section>
   );
 }

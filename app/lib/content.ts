@@ -73,14 +73,29 @@ export const PROCESS_STEPS = [
   { t: "Done Right", d: "Clean, careful work and a guarantee on everything we install or fix." },
 ];
 
+// Real photos of Vlad's work, served from /public/images.
+// First 6 entries are shown in the Portfolio grid; all entries are paged
+// through in the fullscreen Lightbox.
 export const PROJECTS: Project[] = [
-  { src: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=900&q=80", label: "75\" TV Mount on Brick" },
-  { src: "https://images.unsplash.com/photo-1558002038-1055907df827?w=900&q=80", label: "Smart Lock Upgrade" },
-  { src: "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=900&q=80", label: "Ceiling Fan Replacement" },
-  { src: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=900&q=80", label: "Floating Shelves Build" },
-  { src: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=900&q=80", label: "Faucet Replacement" },
-  { src: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=80", label: "Bathroom Re-Caulking" },
+  // ---- Featured (grid) ----
+  { src: "/images/photo_2026-05-13_16-54-22.jpg", label: "Front Door Refinishing — Before & After" },
+  { src: "/images/photo_2026-05-13_16-54-30.jpg", label: "Double-Door Install with Smart Lock" },
+  { src: "/images/photo_2026-05-13_16-54-27.jpg", label: "75\" TV Mount over Brick Fireplace" },
+  { src: "/images/photo_2026-05-13_16-54-26.jpg", label: "Custom Closet Shelving — Before & After" },
+  { src: "/images/photo_2026-05-13_16-54-40.jpg", label: "Bedroom TV Mount, Cables Hidden" },
+  { src: "/images/photo_2026-05-13_16-54-38.jpg", label: "Backyard Pergola Assembly" },
+  // ---- Lightbox-only ----
+  { src: "/images/photo_2026-05-13_16-54-19.jpg", label: "Front Door — Refinished Close-Up" },
+  { src: "/images/photo_2026-05-13_16-54-20.jpg", label: "Door — Mid-Refinish (Sanded)" },
+  { src: "/images/photo_2026-05-13_16-54-23.jpg", label: "Closet Shelving — Installation" },
+  { src: "/images/photo_2026-05-13_16-54-24.jpg", label: "Closet Shelving — Detail View" },
+  { src: "/images/photo_2026-05-13_16-54-28.jpg", label: "TV + Soundbar over Plaster Fireplace" },
+  { src: "/images/photo_2026-05-13_16-54-31.jpg", label: "Living Room TV Mount" },
+  { src: "/images/photo_2026-05-13_16-54-33.jpg", label: "TV Mount on Stacked Stone Fireplace" },
+  { src: "/images/photo_2026-05-13_16-54-37.jpg", label: "Wall TV Mount — Clean Install" },
 ];
+
+export const FEATURED_PROJECT_COUNT = 6;
 
 // Static fallback for the Reviews slider. Used until/unless a Google Sheet
 // review feed loads at runtime.

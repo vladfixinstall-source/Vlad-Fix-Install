@@ -68,6 +68,14 @@
   border-radius: 1rem;
   background: var(--c-white);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  cursor: zoom-in;
+  text-align: left;
+  width: 100%;
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+.card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
 }
 .imageBox {
   aspect-ratio: 4 / 3;
@@ -100,4 +108,36 @@
   line-height: 1.75rem;
   font-weight: 700;
   color: var(--c-slate-900);
+}
+
+.seeMore {
+  margin-top: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+.seeMoreBtn {
+  padding: 0.875rem 1.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--c-slate-300);
+  background: var(--c-white);
+  color: var(--c-slate-900);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.seeMoreBtn:hover {
+  border-color: var(--c-blue-700);
+  background: var(--c-blue-50);
+  color: var(--c-blue-700);
+}
+.seeMoreCount {
+  margin-left: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--c-slate-500);
+}
+.seeMoreBtn:hover .seeMoreCount {
+  color: var(--c-blue-700);
 }
