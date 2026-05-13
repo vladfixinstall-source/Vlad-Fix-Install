@@ -1,0 +1,130 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--c-slate-200);
+  background: var(--c-slate-50);
+}
+@media (min-width: 640px) {
+  .card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+  }
+}
+.cardLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.cardTitle {
+  font-weight: 700;
+  color: var(--c-slate-900);
+}
+.cardRatingRow {
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.cardRatingNumber {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  color: var(--c-slate-900);
+}
+.cardReviewCount {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--c-slate-500);
+}
+.cardComingSoon {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--c-slate-500);
+}
+
+.pillDisabled {
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--c-slate-200);
+  color: var(--c-slate-500);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  cursor: not-allowed;
+}
+
+.linkButton {
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--c-white);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  transition: opacity 150ms ease;
+}
+.linkButton:hover {
+  opacity: 0.9;
+}
+
+/* Skeleton variant */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--c-slate-200);
+  background: var(--c-slate-50);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@media (min-width: 640px) {
+  .skeleton {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+  }
+}
+.skeletonLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.skeletonBadge {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: var(--c-slate-200);
+}
+.skeletonTextBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.skeletonTitleBar {
+  width: 9rem;
+  height: 1.25rem;
+  border-radius: 0.25rem;
+  background: var(--c-slate-200);
+}
+.skeletonSubBar {
+  width: 11rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  background: var(--c-slate-200);
+}
+.skeletonButton {
+  width: 11rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background: var(--c-slate-200);
+}

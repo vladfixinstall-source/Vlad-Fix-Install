@@ -1,16 +1,122 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* =========================================================================
+   Design tokens — every component .module.css consumes these. Color palette
+   mirrors the Tailwind shades the site used before, so the visual result is
+   unchanged.
+   ========================================================================= */
+:root {
+  /* Neutral / slate */
+  --c-white: #ffffff;
+  --c-slate-50: #f8fafc;
+  --c-slate-100: #f1f5f9;
+  --c-slate-200: #e2e8f0;
+  --c-slate-300: #cbd5e1;
+  --c-slate-400: #94a3b8;
+  --c-slate-500: #64748b;
+  --c-slate-600: #475569;
+  --c-slate-700: #334155;
+  --c-slate-900: #0f172a;
 
-html {
-  scroll-behavior: smooth;
+  /* Brand blues */
+  --c-blue-50: #eff6ff;
+  --c-blue-100: #dbeafe;
+  --c-blue-200: #bfdbfe;
+  --c-blue-300: #93c5fd;
+  --c-blue-700: #1d4ed8;
+  --c-blue-800: #1e40af;
+
+  /* Accents */
+  --c-amber-500: #f59e0b;
+  --c-red-50: #fef2f2;
+  --c-red-200: #fecaca;
+  --c-red-700: #b91c1c;
+
+  /* Translucent blues (built from --c-blue-700 via rgba — kept inline below) */
+
+  /* Type */
+  --font-sans: var(--font-inter), system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Container */
+  --container-max: 80rem;        /* 1280px — Tailwind max-w-7xl */
+  --container-prose: 48rem;      /* 768px — Tailwind max-w-3xl */
+  --container-px: 1.5rem;        /* 24px — Tailwind px-6 */
 }
 
+/* =========================================================================
+   Minimal reset (reproduces the parts of Tailwind preflight the site needs)
+   ========================================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
+}
 body {
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--c-slate-900);
+  background: var(--c-white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+ul,
+ol {
+  list-style: none;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  font-size: inherit;
+  font-weight: inherit;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--c-slate-400);
+  opacity: 1;
+}
 
+/* Helper used by the slider — hide scrollbar across browsers */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -19,7 +125,10 @@ body {
   display: none;
 }
 
-/* Primary CTA: pop-in entrance + continuous breathing + springy interact */
+/* =========================================================================
+   Primary CTA button — shared "living" animation (pop-in + breathe + hover
+   spring). Used by every blue primary button on the site.
+   ========================================================================= */
 @keyframes btn-pop-in {
   from {
     opacity: 0;
@@ -39,6 +148,16 @@ body {
   50% {
     transform: scale(1.035);
     box-shadow: 0 12px 22px -6px rgba(29, 78, 216, 0.45);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
   }
 }
 
@@ -61,7 +180,7 @@ body {
   transition-duration: 90ms;
 }
 .btn-primary:focus-visible {
-  outline: 2px solid rgb(96 165 250);
+  outline: 2px solid var(--c-blue-300);
   outline-offset: 3px;
 }
 .btn-primary:disabled,

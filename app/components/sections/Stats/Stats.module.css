@@ -1,0 +1,52 @@
+.section {
+  padding: 5rem 0;
+}
+.grid {
+  margin: 0 auto;
+  max-width: var(--container-max);
+  padding-inline: var(--container-px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+}
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.cell {
+  text-align: center;
+}
+.num {
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--c-blue-700);
+}
+@media (min-width: 768px) {
+  .num {
+    font-size: 3.75rem;
+  }
+}
+.label {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: var(--c-slate-600);
+}
+.skeletonNum {
+  margin: 0 auto;
+  display: block;
+  width: 6rem;
+  height: 3rem;
+  border-radius: 0.25rem;
+  background: var(--c-slate-200);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@media (min-width: 768px) {
+  .skeletonNum {
+    height: 4rem;
+  }
+}

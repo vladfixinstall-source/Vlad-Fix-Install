@@ -1,9 +1,11 @@
 // Tiny inline SVG icons shared across components. No deps, no fetch.
 
+import styles from "./icons.module.css";
+
 export function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
-      className={`h-5 w-5 text-slate-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+      className={`${styles.chevron} ${open ? styles.chevronOpen : ""}`}
       viewBox="0 0 20 20"
       fill="currentColor"
       aria-hidden="true"
@@ -19,7 +21,7 @@ export function ChevronIcon({ open }: { open: boolean }) {
 
 export function CheckIcon() {
   return (
-    <svg className="h-4 w-4 text-blue-700" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+    <svg className={styles.check} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
       <path
         fillRule="evenodd"
         d="M16.704 5.296a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.29-7.29a1 1 0 011.414 0z"

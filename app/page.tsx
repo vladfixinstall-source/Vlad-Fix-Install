@@ -59,7 +59,7 @@ export default function Home() {
   const aggregate = platforms ? computeAggregateRating(platforms) : null;
 
   return (
-    <main className="min-h-screen bg-white text-slate-900">
+    <main style={{ minHeight: "100vh" }}>
       <Header />
       <Hero aggregate={aggregate} />
       <About aggregate={aggregate} />

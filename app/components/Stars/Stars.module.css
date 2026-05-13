@@ -1,0 +1,11 @@
+.wrapper {
+  display: inline-flex;
+  user-select: none;
+  letter-spacing: 0.025em;
+}
+.filled {
+  color: var(--c-amber-500);
+}
+.empty {
+  color: var(--c-slate-300);
+}
