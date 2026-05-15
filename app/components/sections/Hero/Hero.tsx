@@ -12,7 +12,8 @@ export function Hero({ aggregate }: { aggregate: AggregateRating | null }) {
       <div className={styles.grid}>
         <div className={styles.leftCol}>
           <p className={styles.pill}>
-            Trusted San Diego Handyman · 4+ Years of Quality Installs
+            <span>Trusted San Diego Handyman</span>
+            <span className={styles.pillPart2}>4+ Years of Quality Installs</span>
           </p>
           <h1 className={styles.h1}>
             Fix it. Install it. <span className={styles.h1Accent}>Done right.</span>

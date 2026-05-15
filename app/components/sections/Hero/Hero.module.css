@@ -6,14 +6,17 @@
 .grid {
   margin: 0 auto;
   max-width: var(--container-max);
-  padding: 5rem var(--container-px); /* py-20 px-6 */
+  /* Tight top — section sits close under the sticky header. */
+  padding-top: 1rem;
+  padding-bottom: 5rem;
+  padding-inline: var(--container-px);
   display: grid;
   gap: 3rem; /* gap-12 */
 }
 @media (min-width: 1024px) {
   .grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    padding-block: 7rem; /* lg:py-28 */
+    padding-bottom: 7rem; /* lg:pb-28 — bottom only; top stays at 1rem */
   }
 }
 .leftCol {
@@ -44,6 +47,26 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  max-width: 100%;
+}
+/* Separator " · " between the two parts. On narrow screens it disappears
+   and the second part wraps to a new line via `display: block`. */
+.pillPart2::before {
+  content: " · ";
+}
+@media (max-width: 519px) {
+  .pill {
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    text-align: center;
+    line-height: 1.25rem;
+  }
+  .pillPart2 {
+    display: block;
+  }
+  .pillPart2::before {
+    content: "";
+  }
 }
 
 .h1 {
