@@ -18,7 +18,7 @@ export const COMPANY = {
   logoLetter: "V",
   phone: "(760) 626-4981",
   phoneTel: "+17606264981",
-  email: "khanasykv@gmail.com",
+  email: "vladfixinstall@gmail.com",
   area: "San Diego, CA",
 };
 
