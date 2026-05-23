@@ -110,7 +110,7 @@ export const REVIEWS: Review[] = [
 export const OWNER = {
   name: "Vlad",
   tagline: "Honest work, on time, done right — every job.",
-  photo: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&q=80",
+  photo: "/images/MainFoto.png",
   bio: [
     "Hi, I'm Vlad — your local San Diego handyman. Over the last four years I've focused on what most homeowners actually need: clean, careful installations and small repairs done right the first time. TV mounts, smart locks, ceiling fans, faucets, shelves — by treating every job like it's in my own home, I've built Vlad Fix & Install on a simple promise.",
     "I take one customer at a time, never stack appointments back-to-back, and stand behind every install with a workmanship guarantee. You'll always know exactly what you're paying for before I lift a tool — no surprises on the bill, no rushed corners, and the work area cleaner than I found it.",
