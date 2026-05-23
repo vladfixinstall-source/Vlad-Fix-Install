@@ -31,7 +31,7 @@ directly from their inbox.
 ## Contact form delivery (Web3Forms)
 
 1. Visit https://web3forms.com and enter the destination email
-   (e.g. `khanasykv@gmail.com`) in the homepage field.
+   (e.g. `vladfixinstall@gmail.com`) in the homepage field.
 2. Web3Forms emails an **access key** (UUID format like
    `a1b2c3d4-1234-5678-9abc-def012345678`) to that address instantly.
    No activation flow, no double-opt-in.
