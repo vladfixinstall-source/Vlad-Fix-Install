@@ -1,10 +1,10 @@
 "use client";
 
-// Contact form delivered via Formsubmit.co — see lib/sheet.ts for the
-// endpoint env var.
+// Contact form delivered via Web3Forms (https://web3forms.com).
+// See lib/sheet.ts for the access-key env var.
 
 import { FormEvent, useState } from "react";
-import { FORMSUBMIT_ENDPOINT } from "../../lib/sheet";
+import { WEB3FORMS_KEY } from "../../lib/sheet";
 import { ServiceSelect } from "../ServiceSelect";
 import styles from "./ContactForm.module.css";
 
@@ -25,7 +25,7 @@ export function ContactForm({ id, compact = false }: { id: string; compact?: boo
       setSent(true);
       return;
     }
-    if (!FORMSUBMIT_ENDPOINT) {
+    if (!WEB3FORMS_KEY) {
       setSent(true);
       return;
     }
@@ -34,23 +34,29 @@ export function ContactForm({ id, compact = false }: { id: string; compact?: boo
     setError(null);
 
     try {
-      const res = await fetch(`https://formsubmit.co/ajax/${FORMSUBMIT_ENDPOINT}`, {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
           phone: data.phone,
           service: data.service,
           message: data.msg,
-          _subject: `New estimate: ${data.service || "Service request"} — ${data.firstName ?? ""} ${data.lastName ?? ""}`.trim(),
-          _replyto: data.email,
-          _template: "table",
-          _captcha: "false",
+          subject: `New estimate: ${data.service || "Service request"} — ${data.firstName ?? ""} ${data.lastName ?? ""}`.trim(),
+          replyto: data.email,
+          // Web3Forms server-side honeypot — must be empty for real users.
+          botcheck: "",
         }),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const result: { success?: boolean; message?: string } = await res
+        .json()
+        .catch(() => ({}));
+      if (!res.ok || !result.success) {
+        throw new Error(result.message || `HTTP ${res.status}`);
+      }
       setSent(true);
     } catch {
       setError(

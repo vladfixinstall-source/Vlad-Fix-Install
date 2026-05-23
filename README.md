@@ -21,28 +21,31 @@ The contact form uses a custom service-picker dropdown (animated, keyboard-
 dismissible, click-outside-to-close) populated from the same `SERVICES` list
 that drives the services grid.
 
-Submissions are delivered by [Formsubmit.co](https://formsubmit.co) — no
-backend required. The form POSTs JSON to their AJAX endpoint, which emails
-the destination address. Includes a honeypot field for bot protection,
-loading and error states, and `_replyto` is set to the customer's email so
-the owner can reply directly from their inbox.
+Submissions are delivered by [Web3Forms](https://web3forms.com) — no
+backend required. The form POSTs JSON to their `/submit` endpoint with an
+access key, which Web3Forms relays to the registered destination email.
+Includes a honeypot field for bot protection, loading and error states,
+and `replyto` is set to the customer's email so the owner can reply
+directly from their inbox.
 
-## Contact form delivery (Formsubmit.co)
+## Contact form delivery (Web3Forms)
 
-1. Set the destination in `.env.local`:
+1. Visit https://web3forms.com and enter the destination email
+   (e.g. `khanasykv@gmail.com`) in the homepage field.
+2. Web3Forms emails an **access key** (UUID format like
+   `a1b2c3d4-1234-5678-9abc-def012345678`) to that address instantly.
+   No activation flow, no double-opt-in.
+3. Paste the key into `.env.local`:
    ```
-   NEXT_PUBLIC_FORMSUBMIT_ENDPOINT=your@email.com
+   NEXT_PUBLIC_WEB3FORMS_KEY=a1b2c3d4-1234-5678-9abc-def012345678
    ```
-2. Submit the form **once** from the live site. Formsubmit will email a
-   confirmation link to that address — click it to activate.
-3. From then on, every submission is delivered to the inbox.
-4. (Recommended) Once active, log into Formsubmit, grab the **hashed key**
-   (looks like `el/xxxxxxxx`), and replace the email in `.env.local` so the
-   raw address isn't visible in browser source.
+4. From now on, every submission is delivered to the registered email.
+   The access key is tied to that email — to change destination, register
+   a different email and swap the key.
 
-Free tier covers a generous monthly volume; there is no signup. If the env
-var is left unset, the form shows the success message without actually
-sending — useful for offline demos.
+Free tier covers 250 submissions/month — plenty for a handyman site. If
+the env var is left unset, the form shows the success message without
+actually sending — useful for offline demos.
 
 ## Owner / "Meet Vlad" section
 

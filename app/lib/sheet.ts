@@ -9,9 +9,11 @@ import type { ReviewPlatform } from "./platforms";
 // .env.local or the deployment platform's env vars.
 export const REVIEWS_SHEET_ID = process.env.NEXT_PUBLIC_REVIEWS_SHEET_ID ?? "";
 
-// Formsubmit.co destination for contact-form submissions. Plain email or
-// hashed key. Empty value puts the form in offline/demo mode.
-export const FORMSUBMIT_ENDPOINT = process.env.NEXT_PUBLIC_FORMSUBMIT_ENDPOINT ?? "";
+// Web3Forms access key — issued at https://web3forms.com when an email is
+// registered. Form submissions POST to api.web3forms.com/submit with this
+// key and are delivered to the registered email. Empty value puts the form
+// in offline/demo mode (shows success but doesn't actually send).
+export const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY ?? "";
 
 // ---------- CSV helpers (Reviews tab) ----------
 
