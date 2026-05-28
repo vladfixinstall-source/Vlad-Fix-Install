@@ -5,10 +5,13 @@
 
 import { FormEvent, useState } from "react";
 import { WEB3FORMS_KEY } from "../../lib/sheet";
+import { pushFormError, pushFormSubmit } from "../../lib/gtm";
 import { ServiceSelect } from "../ServiceSelect";
 import styles from "./ContactForm.module.css";
 
-export function ContactForm({ id, compact = false }: { id: string; compact?: boolean }) {
+type FormId = "hero-form" | "footer-form";
+
+export function ContactForm({ id, compact = false }: { id: FormId; compact?: boolean }) {
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,6 +29,9 @@ export function ContactForm({ id, compact = false }: { id: string; compact?: boo
       return;
     }
     if (!WEB3FORMS_KEY) {
+      // Offline/demo mode — still push the lead event so GTM sees it
+      // in local previews. Production always has the key set.
+      pushFormSubmit({ form_id: id, service: data.service });
       setSent(true);
       return;
     }
@@ -57,8 +63,13 @@ export function ContactForm({ id, compact = false }: { id: string; compact?: boo
       if (!res.ok || !result.success) {
         throw new Error(result.message || `HTTP ${res.status}`);
       }
+      pushFormSubmit({ form_id: id, service: data.service });
       setSent(true);
-    } catch {
+    } catch (err) {
+      pushFormError({
+        form_id: id,
+        reason: err instanceof Error ? err.message : "unknown",
+      });
       setError(
         "Something went wrong. Please try again or call us directly at (760) 626-4981.",
       );

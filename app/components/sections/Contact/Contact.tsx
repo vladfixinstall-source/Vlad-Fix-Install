@@ -1,7 +1,10 @@
+"use client";
+
 // Bottom contact section — business details, ZIP-code service-area strip,
 // and the second contact form.
 
 import { COMPANY, SERVICE_RADIUS_MILES, SERVICE_ZIPS } from "../../../lib/content";
+import { pushEmailClick, pushPhoneClick } from "../../../lib/gtm";
 import { ContactForm } from "../../ContactForm";
 import styles from "./Contact.module.css";
 
@@ -21,13 +24,21 @@ export function Contact() {
           <div className={styles.infoGrid}>
             <div>
               <p className={styles.infoLabel}>Phone</p>
-              <a href={`tel:${COMPANY.phoneTel}`} className={styles.infoPhone}>
+              <a
+                href={`tel:${COMPANY.phoneTel}`}
+                className={styles.infoPhone}
+                onClick={() => pushPhoneClick({ location: "contact" })}
+              >
                 {COMPANY.phone}
               </a>
             </div>
             <div>
               <p className={styles.infoLabel}>Email</p>
-              <a href={`mailto:${COMPANY.email}`} className={styles.infoEmail}>
+              <a
+                href={`mailto:${COMPANY.email}`}
+                className={styles.infoEmail}
+                onClick={() => pushEmailClick({ location: "contact" })}
+              >
                 {COMPANY.email}
               </a>
             </div>

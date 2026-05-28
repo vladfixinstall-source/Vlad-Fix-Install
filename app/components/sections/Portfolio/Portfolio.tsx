@@ -6,6 +6,7 @@
 
 import { useState } from "react";
 import { FEATURED_PROJECT_COUNT, PROJECTS } from "../../../lib/content";
+import { pushPortfolioView } from "../../../lib/gtm";
 import { Lightbox } from "../../Lightbox";
 import styles from "./Portfolio.module.css";
 
@@ -13,6 +14,14 @@ export function Portfolio() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const featured = PROJECTS.slice(0, FEATURED_PROJECT_COUNT);
   const extra = Math.max(0, PROJECTS.length - FEATURED_PROJECT_COUNT);
+
+  const openLightbox = (index: number) => {
+    const photo = PROJECTS[index];
+    if (photo) {
+      pushPortfolioView({ photo_index: index, photo_label: photo.label });
+    }
+    setLightboxIndex(index);
+  };
 
   return (
     <section id="portfolio" className={styles.section}>
@@ -31,7 +40,7 @@ export function Portfolio() {
             <button
               key={i}
               type="button"
-              onClick={() => setLightboxIndex(i)}
+              onClick={() => openLightbox(i)}
               className={styles.card}
               aria-label={`Open photo: ${p.label}`}
             >
@@ -53,7 +62,7 @@ export function Portfolio() {
           <div className={styles.seeMore}>
             <button
               type="button"
-              onClick={() => setLightboxIndex(0)}
+              onClick={() => openLightbox(0)}
               className={styles.seeMoreBtn}
             >
               See all jobs
