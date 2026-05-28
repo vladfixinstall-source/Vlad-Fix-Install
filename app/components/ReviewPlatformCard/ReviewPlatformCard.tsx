@@ -1,6 +1,9 @@
+"use client";
+
 // Trust-widget card for a single review platform (Thumbtack / Google).
 
 import type { ReviewPlatform } from "../../lib/platforms";
+import { pushPlatformClick } from "../../lib/gtm";
 import { Stars } from "../Stars";
 import styles from "./ReviewPlatformCard.module.css";
 
@@ -36,6 +39,7 @@ export function ReviewPlatformCard({ platform: p }: { platform: ReviewPlatform }
           rel="noopener noreferrer"
           className={styles.linkButton}
           style={{ background: p.buttonBg }}
+          onClick={() => pushPlatformClick({ platform: p.name })}
         >
           {p.cta}
         </a>

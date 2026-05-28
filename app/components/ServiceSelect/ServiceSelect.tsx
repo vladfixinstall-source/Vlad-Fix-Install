@@ -6,6 +6,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { SERVICE_OPTIONS } from "../../lib/content";
+import { pushServiceSelect } from "../../lib/gtm";
 import { CheckIcon, ChevronIcon } from "../icons";
 import styles from "./ServiceSelect.module.css";
 
@@ -64,6 +65,7 @@ export function ServiceSelect({
               aria-selected={selected}
               onClick={() => {
                 onChange(label);
+                pushServiceSelect({ service: label });
                 setOpen(false);
               }}
               className={`${styles.option} ${selected ? styles.optionSelected : styles.optionIdle}`}

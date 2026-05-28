@@ -1,7 +1,10 @@
+"use client";
+
 // "Meet Vlad" — owner photo, bio, highlights and a CTA back to the form.
 
 import { OWNER } from "../../../lib/content";
 import type { AggregateRating } from "../../../lib/rating";
+import { pushCtaClick } from "../../../lib/gtm";
 import { CheckIcon } from "../../icons";
 import { Stars } from "../../Stars";
 import styles from "./About.module.css";
@@ -55,7 +58,13 @@ export function About({ aggregate }: { aggregate: AggregateRating | null }) {
               </li>
             ))}
           </ul>
-          <a href="#contact" className={`btn-primary ${styles.cta}`}>
+          <a
+            href="#contact"
+            className={`btn-primary ${styles.cta}`}
+            onClick={() =>
+              pushCtaClick({ cta_id: "get_in_touch", cta_location: "about" })
+            }
+          >
             Get in touch with me
             <span className={styles.ctaArrow}>→</span>
           </a>

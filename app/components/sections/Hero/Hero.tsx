@@ -1,9 +1,12 @@
+"use client";
+
 // Hero — value proposition, primary CTAs, the first contact form and
 // the trust-signal row.
 
 import { ContactForm } from "../../ContactForm";
 import { Stars } from "../../Stars";
 import type { AggregateRating } from "../../../lib/rating";
+import { pushCtaClick } from "../../../lib/gtm";
 import styles from "./Hero.module.css";
 
 export function Hero({ aggregate }: { aggregate: AggregateRating | null }) {
@@ -25,10 +28,22 @@ export function Hero({ aggregate }: { aggregate: AggregateRating | null }) {
             workmanship guarantee on every job.
           </p>
           <div className={styles.ctaRow}>
-            <a href="#contact" className={`btn-primary ${styles.ctaPrimary}`}>
+            <a
+              href="#contact"
+              className={`btn-primary ${styles.ctaPrimary}`}
+              onClick={() =>
+                pushCtaClick({ cta_id: "get_free_estimate", cta_location: "hero" })
+              }
+            >
               Get Free Estimate
             </a>
-            <a href="#services" className={styles.ctaSecondary}>
+            <a
+              href="#services"
+              className={styles.ctaSecondary}
+              onClick={() =>
+                pushCtaClick({ cta_id: "see_services", cta_location: "hero" })
+              }
+            >
               See Services
             </a>
           </div>

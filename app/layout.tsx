@@ -2,6 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import CookieBanner from "./components/CookieBanner";
+import {
+  GoogleTagManagerNoScript,
+  GoogleTagManagerScript,
+  GTMRouteChange,
+} from "./components/GoogleTagManager";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const playfair = Playfair_Display({
@@ -90,7 +95,15 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <head>
+        {/* GTM container boot — as high in <head> as Next.js allows. */}
+        <GoogleTagManagerScript />
+      </head>
       <body>
+        {/* GTM JS-disabled fallback — must be the FIRST child of body. */}
+        <GoogleTagManagerNoScript />
+        {/* SPA route-change page_view pushes (post-hydration). */}
+        <GTMRouteChange />
         {children}
         <CookieBanner />
       </body>

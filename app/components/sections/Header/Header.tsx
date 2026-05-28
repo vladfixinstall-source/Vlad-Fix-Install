@@ -8,6 +8,12 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { COMPANY, LOGO } from "../../../lib/content";
+import {
+  pushCtaClick,
+  pushMobileMenuOpen,
+  pushNavClick,
+  pushPhoneClick,
+} from "../../../lib/gtm";
 import styles from "./Header.module.css";
 
 const NAV_LINKS = [
@@ -105,7 +111,12 @@ export function Header() {
 
           <nav className={styles.nav}>
             {NAV_LINKS.map((l) => (
-              <a key={l.href} href={l.href} className={styles.navLink}>
+              <a
+                key={l.href}
+                href={l.href}
+                className={styles.navLink}
+                onClick={() => pushNavClick({ target: l.href, location: "header" })}
+              >
                 {l.label}
               </a>
             ))}
@@ -116,17 +127,29 @@ export function Header() {
               href={`tel:${COMPANY.phoneTel}`}
               className={styles.phone}
               aria-label={`Call ${COMPANY.phone}`}
+              onClick={() => pushPhoneClick({ location: "header" })}
             >
               <PhoneIcon />
               <span className={styles.phoneText}>{COMPANY.phone}</span>
             </a>
-            <a href="#contact" className={`btn-primary ${styles.cta}`}>
+            <a
+              href="#contact"
+              className={`btn-primary ${styles.cta}`}
+              onClick={() =>
+                pushCtaClick({ cta_id: "free_estimate", cta_location: "header" })
+              }
+            >
               Free Estimate
             </a>
             <button
               type="button"
               className={styles.burger}
-              onClick={() => setOpen((o) => !o)}
+              onClick={() => {
+                setOpen((o) => {
+                  if (!o) pushMobileMenuOpen();
+                  return !o;
+                });
+              }}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               aria-controls="mobile-nav"
@@ -157,7 +180,10 @@ export function Header() {
               key={l.href}
               href={l.href}
               className={styles.drawerLink}
-              onClick={close}
+              onClick={() => {
+                pushNavClick({ target: l.href, location: "drawer" });
+                close();
+              }}
             >
               {l.label}
             </a>
@@ -167,7 +193,10 @@ export function Header() {
           <a
             href={`tel:${COMPANY.phoneTel}`}
             className={styles.drawerPhone}
-            onClick={close}
+            onClick={() => {
+              pushPhoneClick({ location: "drawer" });
+              close();
+            }}
           >
             <PhoneIcon />
             <span>{COMPANY.phone}</span>
@@ -175,7 +204,10 @@ export function Header() {
           <a
             href="#contact"
             className={`btn-primary ${styles.drawerCta}`}
-            onClick={close}
+            onClick={() => {
+              pushCtaClick({ cta_id: "free_estimate", cta_location: "drawer" });
+              close();
+            }}
           >
             Free Estimate
           </a>

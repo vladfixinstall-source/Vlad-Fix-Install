@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { pushCookieConsent } from "../../lib/gtm";
 import styles from "./CookieBanner.module.css";
 
 const STORAGE_KEY = "vfi-cookie-consent";
@@ -36,6 +37,7 @@ export default function CookieBanner() {
 
   const respond = (choice: Consent) => {
     writeConsent(choice);
+    pushCookieConsent({ choice });
     setVisible(false);
   };
 
